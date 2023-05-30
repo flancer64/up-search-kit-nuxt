@@ -1,0 +1,12 @@
+*.log*
+.cache
+.DS_Store
+.env
+.fleet
+.idea
+.nitro
+.nuxt
+.output
+dist
+node_modules
+package-lock.json
