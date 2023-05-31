@@ -9,14 +9,15 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@types/node": "^18",
-    "nuxt": "^3.5.2",
-    "nuxt-quasar-ui": "^1.7.4"
+    "@types/node": "latest",
+    "nuxt": "latest",
+    "nuxt-quasar-ui": "latest"
   },
   "dependencies": {
-    "@quasar/extras": "^1.16.4",
+    "@quasar/extras": "latest",
     "@searchkit/instantsearch-client": "latest",
-    "quasar": "^2.12.0",
-    "searchkit": "latest"
+    "quasar": "latest",
+    "searchkit": "latest",
+    "vue-instantsearch": "latest"
   }
 }

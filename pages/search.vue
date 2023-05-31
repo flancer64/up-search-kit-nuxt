@@ -1,7 +1,9 @@
-<script setup>
+<script>
+// IMPORTS
 import Client from '@searchkit/instantsearch-client';
 import Searchkit from 'searchkit';
 
+// VARS
 const INDEX = 'imdb_movies'; // name of the index used in the search
 const config = {
   connection: {
@@ -40,24 +42,149 @@ const config = {
 };
 const searchkitClient = new Searchkit(config);
 const searchClient = Client(searchkitClient);
-const {results} = await searchClient.search([{
-  indexName: INDEX,
-  query: {
-    query: '',
-    filters: [
-      'composition:*',
-    ]
-  }
-}]);
-const [first] = results;
-const hits = first?.nbHits
+
+// MAIN
+export default {
+  /**
+   * @param {Object} inst current instance of this Vue Component
+   * @return {Object}
+   */
+  data(inst) {
+    return {
+      INDEX,
+      searchClient,
+    };
+  },
+  setup() {
+    useHead({
+      link: [
+        {
+          rel: 'stylesheet',
+          href: 'https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/satellite-min.css'
+        }
+      ]
+    });
+  },
+};
 </script>
 
 <template>
   <q-btn color="primary">Search</q-btn>
-
   <div class="container">
-    <div>Total '{{ hits }}' items found.</div>
-  </div>
+    <ais-instant-search
+        :search-client="searchClient"
+        :index-name="INDEX"
+    >
+      <ais-configure :hits-per-page.camel="8"/>
+      <div class="search-panel">
+        <div class="search-panel__filters">
+          <ais-panel>
+            <template v-slot:header>type</template>
+            <ais-refinement-list attribute="type"/>
+          </ais-panel>
 
+          <ais-panel>
+            <template v-slot:header>actors</template>
+            <ais-refinement-list searchable attribute="actors"/>
+          </ais-panel>
+        </div>
+
+        <div class="search-panel__results">
+          <div class="searchbox">
+            <ais-search-box placeholder=""/>
+          </div>
+          <ais-hits>
+            <template v-slot:item="{ item, index }">
+              <article>
+                <h1>
+                  <ais-highlight attribute="title" :hit="item"/>
+                </h1>
+                <p>
+                  <ais-snippet :hit="item" attribute="plot"/>
+                </p>
+              </article>
+            </template>
+          </ais-hits>
+
+          <div class="pagination">
+            <ais-pagination/>
+          </div>
+        </div>
+      </div>
+    </ais-instant-search>
+  </div>
 </template>
+
+<style>
+body,
+h1 {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+  Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+em {
+  background: cyan;
+  font-style: normal;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  min-height: 50px;
+  padding: 0.5rem 1rem;
+  background-image: linear-gradient(to right, #4dba87, #2f9088);
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.header a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.header-title {
+  font-size: 1.2rem;
+  font-weight: normal;
+}
+
+.header-title::after {
+  content: ' ▸ ';
+  padding: 0 0.5rem;
+}
+
+.header-subtitle {
+  font-size: 1.2rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.search-panel {
+  display: flex;
+}
+
+.search-panel__filters {
+  flex: 1;
+}
+
+.search-panel__results {
+  flex: 3;
+}
+
+.searchbox {
+  margin-bottom: 2rem;
+}
+
+.pagination {
+  margin: 2rem auto;
+  text-align: center;
+}
+</style>
