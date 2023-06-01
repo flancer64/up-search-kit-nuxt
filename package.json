@@ -18,6 +18,7 @@
     "@searchkit/instantsearch-client": "latest",
     "quasar": "latest",
     "searchkit": "latest",
-    "vue-instantsearch": "latest"
+    "vue-instantsearch": "latest",
+    "vue-server-renderer": "^2.7.14"
   }
 }

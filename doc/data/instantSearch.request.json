@@ -1,0 +1,26 @@
+[
+  {
+    "indexName": "imdb_movies",
+    "params": {
+      "facetFilters": [
+        [
+          "type:movie"
+        ],
+        [
+          "actors:Robert De Niro"
+        ]
+      ],
+      "facets": [
+        "type",
+        "actors"
+      ],
+      "highlightPostTag": "__/ais-highlight__",
+      "highlightPreTag": "__ais-highlight__",
+      "hitsPerPage": 8,
+      "maxValuesPerFacet": 10,
+      "page": 0,
+      "query": "",
+      "tagFilters": ""
+    }
+  }
+]

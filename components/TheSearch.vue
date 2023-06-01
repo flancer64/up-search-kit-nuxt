@@ -1,52 +1,71 @@
 <script>
 // IMPORTS
-import Client from '@searchkit/instantsearch-client';
-import Searchkit from 'searchkit';
-import { history as historyRouter } from "instantsearch.js/es/lib/routers";
-import { singleIndex as singleIndexMapping } from "instantsearch.js/es/lib/stateMappings";
-
+import {renderToString} from 'vue/server-renderer';
+import {INDEX, getSearchClient, getServerRootMixin} from '~/utils/searchKit';
+import {
+  AisConfigure,
+  AisHighlight,
+  AisHits,
+  AisInstantSearchSsr,
+  AisPagination,
+  AisPanel,
+  AisRefinementList,
+  AisSearchBox,
+  AisSnippet,
+  AisStats,
+} from 'vue-instantsearch/vue3/es';
 // VARS
-const INDEX = 'imdb_movies'; // name of the index used in the search
-const config = {
-  connection: {
-    host: 'https://commerce-demo.es.us-east4.gcp.elastic-cloud.com:9243',
-    // if you are authenticating with api key
-    // https://www.searchkit.co/docs/guides/setup-elasticsearch#connecting-with-api-key
-    apiKey: 'a2Rha1VJTUJMcGU4ajA3Tm9fZ0Y6MjAzX2pLbURTXy1hNm9SUGZGRlhJdw=='
-    // if you are authenticating with username/password
-    // https://www.searchkit.co/docs/guides/setup-elasticsearch#connecting-with-usernamepassword
-    //auth: {
-    //  username: "elastic",
-    //  password: "changeme"
-    //},
-  },
-  search_settings: {
-    highlight_attributes: ['title'],
-    search_attributes: [{field: 'title', weight: 3}, 'actors', 'plot'],
-    result_attributes: ['title', 'actors', 'poster', 'plot'],
-    facet_attributes: [
-      'type',
-      {attribute: 'actors', field: 'actors.keyword', type: 'string'}
-    ],
-    sorting: {
-      default: {
-        field: '_score',
-        order: 'desc'
-      },
-      _rated_desc: {
-        field: 'rated',
-        order: 'desc'
-      }
-    },
-    snippet_attributes: ['plot'],
-    query_rules: []
-  }
-};
-const searchkitClient = new Searchkit(config);
-const searchClient = Client(searchkitClient);
+const REF_SK = 'sk'; // reference for the SearchKit component
+const searchClient = getSearchClient();
+
+// searchKit.handleInstantSearchRequests();
+// const search = instantsearch({
+//   indexName: INDEX,
+//   searchClient: searchClient
+// });
+// const myHits = await searchClient.search([
+//   {
+//     indexName: INDEX,
+//     'params': {
+//       'facetFilters': [
+//         [
+//           'type:movie'
+//         ],
+//         [
+//           'actors:Robert De Niro'
+//         ]
+//       ],
+//       'facets': [
+//         'type',
+//         'actors'
+//       ],
+//       'highlightPostTag': '__/ais-highlight__',
+//       'highlightPreTag': '__ais-highlight__',
+//       'hitsPerPage': 8,
+//       'maxValuesPerFacet': 10,
+//       'page': 0,
+//       'query': '',
+//       'tagFilters': ''
+//     }
+//   }
+// ]);
+
+// FUNCS
 
 // MAIN
 export default {
+  components: {
+    AisConfigure,
+    AisHighlight,
+    AisHits,
+    AisInstantSearchSsr,
+    AisPagination,
+    AisPanel,
+    AisRefinementList,
+    AisSearchBox,
+    AisSnippet,
+    AisStats,
+  },
   /**
    * @param {Object} inst current instance of this Vue Component
    * @return {Object}
@@ -54,58 +73,65 @@ export default {
   data(inst) {
     return {
       INDEX,
-      routing: {
-        router: historyRouter(),
-        // this object must contain two props: stateToRoute & routeToState
-        stateMapping: (() => {
-          // get 'singleIndexMapping' as a base for stateMapping object
-          const res = singleIndexMapping("instant_search");
-          // I've replaced `routeToState` with own code
-          res.routeToState = (routeState) => {
-            const res = { [INDEX]: { "refinementList": {} } };
-            const params = inst.$route.params;
-            if (params?.type)
-              res[INDEX].refinementList.type = [params.type];
-            if (params?.actors) {
-              const actor = decodeKey(params.actors);
-              res[INDEX].refinementList.actors = [actor];
-            }
-            return res;
-          };
-          return res;
-        })()
-      },
-      searchClient,
+      REF_SK,
       searchKey: null, // decoded search key from URL to use within this component
     };
   },
-  created() {
+  async created() {
     // extract search key from URL and set component property
     const route = this.$route;
     const keyEncoded = route.params?.key;
     this.searchKey = decodeKey(keyEncoded);
   },
+  mounted() {
+  },
+  mixins: [
+    // add the instance of InstantSearch to the component
+    getServerRootMixin()
+  ],
+  /**
+   * Async function to be resolved before the component instance is to be rendered on the server.
+   * https://vuejs.org/api/options-lifecycle.html#serverprefetch
+   */
+  async serverPrefetch() {
+    console.log(`serverPrefetch in the Component.`);
+    if (this.instantsearch?.findResultsState) {
+      console.log(`findResultsState property is available in the Component.`);
+      // if app contains InstantSearch client - render it.
+      return this.instantsearch?.findResultsState({
+        component: this,
+        renderToString,
+      });
+    } else {
+      console.log(`findResultsState property is NOT available in the Component.`);
+    }
+  },
+  async beforeMount() {
+    console.log(`beforeMount in the Component.`);
+    if (this.instantsearch?.hydrate) {
+      console.log(`hydrate property is available in the Component.`);
+      const results =
+          (this.$nuxt.context && this.$nuxt.context.nuxtState.algoliaState) ||
+          window.__NUXT__.algoliaState;
+
+      this.instantsearch.hydrate(results);
+
+      // Remove the SSR state, so it can't be applied again by mistake
+      delete this.$nuxt?.context?.nuxtState?.algoliaState;
+      delete window.__NUXT__?.algoliaState;
+    } else {
+      console.log(`hydrate property is NOT available in the Component.`);
+    }
+  },
   setup() {
-    // use Nuxt functions here.
-    useHead({
-      link: [
-        {
-          rel: 'stylesheet',
-          href: 'https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/satellite-min.css'
-        }
-      ]
-    });
+    // `useHead` is not available in SSR mode (at least with InstantSearch)
   },
 };
 </script>
 
 <template>
   <div class="container">
-    <ais-instant-search
-        :search-client="searchClient"
-        :index-name="INDEX"
-        :routing="routing"
-    >
+    <ais-instant-search-ssr>
       <ais-configure :hits-per-page.camel="8"/>
       <div class="search-panel">
         <div class="search-panel__filters">
@@ -142,11 +168,14 @@ export default {
           </div>
         </div>
       </div>
-    </ais-instant-search>
+    </ais-instant-search-ssr>
   </div>
 </template>
 
 <style>
+/* useHead & nuxt.config.ts don't work with with InstantSearch SSR */
+@import "https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/satellite-min.css";
+
 body,
 h1 {
   margin: 0;

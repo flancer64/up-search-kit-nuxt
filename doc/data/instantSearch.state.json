@@ -1,0 +1,9 @@
+{
+  "imdb_movies": {
+    "configure": {"hitsPerPage": 8},
+    "refinementList": {
+      "type": ["movie"],
+      "actors": ["Robert De Niro", "Al Pacino"]
+    }
+  }
+}

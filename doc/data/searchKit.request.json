@@ -1,0 +1,270 @@
+[
+  {
+    "body": {
+      "aggs": {
+        "type": {
+          "terms": {
+            "field": "type",
+            "size": 10
+          }
+        },
+        "actors": {
+          "terms": {
+            "field": "actors.keyword",
+            "size": 10
+          }
+        }
+      },
+      "query": {
+        "bool": {
+          "filter": [
+            {
+              "bool": {
+                "should": [
+                  {
+                    "term": {
+                      "type": "movie"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "bool": {
+                "should": [
+                  {
+                    "term": {
+                      "actors.keyword": "Al Pacino"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "must": {
+            "match_all": {}
+          }
+        }
+      },
+      "size": 8,
+      "from": 0,
+      "_source": {
+        "includes": [
+          "title",
+          "actors",
+          "poster",
+          "plot"
+        ]
+      },
+      "highlight": {
+        "pre_tags": [
+          "<em>"
+        ],
+        "post_tags": [
+          "</em>"
+        ],
+        "fields": {
+          "title": {
+            "number_of_fragments": 0
+          },
+          "plot": {
+            "number_of_fragments": 5,
+            "fragment_size": 100
+          }
+        }
+      },
+      "sort": {
+        "_score": "desc"
+      }
+    },
+    "request": {
+      "indexName": "imdb_movies",
+      "params": {
+        "facetFilters": [
+          [
+            "type:movie"
+          ],
+          [
+            "actors:Al Pacino"
+          ]
+        ],
+        "facets": [
+          "type",
+          "actors"
+        ],
+        "highlightPostTag": "__/ais-highlight__",
+        "highlightPreTag": "__ais-highlight__",
+        "hitsPerPage": 8,
+        "maxValuesPerFacet": 10,
+        "page": 0,
+        "query": "",
+        "tagFilters": ""
+      }
+    },
+    "indexName": "imdb_movies"
+  },
+  {
+    "body": {
+      "aggs": {
+        "type": {
+          "terms": {
+            "field": "type",
+            "size": 10
+          }
+        }
+      },
+      "query": {
+        "bool": {
+          "filter": [
+            {
+              "bool": {
+                "should": [
+                  {
+                    "term": {
+                      "actors.keyword": "Al Pacino"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "must": {
+            "match_all": {}
+          }
+        }
+      },
+      "size": 0,
+      "from": 0,
+      "_source": {
+        "includes": [
+          "title",
+          "actors",
+          "poster",
+          "plot"
+        ]
+      },
+      "highlight": {
+        "pre_tags": [
+          "<em>"
+        ],
+        "post_tags": [
+          "</em>"
+        ],
+        "fields": {
+          "title": {
+            "number_of_fragments": 0
+          },
+          "plot": {
+            "number_of_fragments": 5,
+            "fragment_size": 100
+          }
+        }
+      },
+      "sort": {
+        "_score": "desc"
+      }
+    },
+    "request": {
+      "indexName": "imdb_movies",
+      "params": {
+        "analytics": false,
+        "clickAnalytics": false,
+        "facetFilters": [
+          [
+            "actors:Al Pacino"
+          ]
+        ],
+        "facets": "type",
+        "highlightPostTag": "__/ais-highlight__",
+        "highlightPreTag": "__ais-highlight__",
+        "hitsPerPage": 0,
+        "maxValuesPerFacet": 10,
+        "page": 0,
+        "query": ""
+      }
+    },
+    "indexName": "imdb_movies"
+  },
+  {
+    "body": {
+      "aggs": {
+        "actors": {
+          "terms": {
+            "field": "actors.keyword",
+            "size": 10
+          }
+        }
+      },
+      "query": {
+        "bool": {
+          "filter": [
+            {
+              "bool": {
+                "should": [
+                  {
+                    "term": {
+                      "type": "movie"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "must": {
+            "match_all": {}
+          }
+        }
+      },
+      "size": 0,
+      "from": 0,
+      "_source": {
+        "includes": [
+          "title",
+          "actors",
+          "poster",
+          "plot"
+        ]
+      },
+      "highlight": {
+        "pre_tags": [
+          "<em>"
+        ],
+        "post_tags": [
+          "</em>"
+        ],
+        "fields": {
+          "title": {
+            "number_of_fragments": 0
+          },
+          "plot": {
+            "number_of_fragments": 5,
+            "fragment_size": 100
+          }
+        }
+      },
+      "sort": {
+        "_score": "desc"
+      }
+    },
+    "request": {
+      "indexName": "imdb_movies",
+      "params": {
+        "analytics": false,
+        "clickAnalytics": false,
+        "facetFilters": [
+          [
+            "type:movie"
+          ]
+        ],
+        "facets": "actors",
+        "highlightPostTag": "__/ais-highlight__",
+        "highlightPreTag": "__ais-highlight__",
+        "hitsPerPage": 0,
+        "maxValuesPerFacet": 10,
+        "page": 0,
+        "query": ""
+      }
+    },
+    "indexName": "imdb_movies"
+  }
+]
