@@ -61,7 +61,7 @@ export function getServerRootMixin() {
     return mixin;
 }
 
-export function composeSearchRequest({type, actors, query} = {}) {
+export function composeSearchRequest({type, actors, query, page} = {}) {
     const res = {
         indexName: INDEX,
         params: {
@@ -71,7 +71,7 @@ export function composeSearchRequest({type, actors, query} = {}) {
             highlightPreTag: '__ais-highlight__',
             hitsPerPage: 8,
             maxValuesPerFacet: 10,
-            page: 0,
+            page: page ?? 0,
             tagFilters: ''
         }
     };

@@ -24,8 +24,11 @@ function getFacets(data) {
 export default {
   data() {
     return {
+      actors: null,
       INDEX,
+      page: 0,
       search: null, // search results
+      type: null,
     };
   },
   computed: {
@@ -35,8 +38,13 @@ export default {
     facetsType() {
       return getFacets(this.search?.facets?.type);
     },
-    hits() {
-
+    pages() {
+      return this.search?.nbPages ? (this.search?.nbPages - 1) : 0;
+    },
+  },
+  methods: {
+    link(page) {
+      return `/search/${page}/${this.type}/${this.actors}/`;
     },
   },
   /**
@@ -48,8 +56,18 @@ export default {
     const searchParams = {};
     // extract search keys from URL
     const urlParams = this.$route.params;
-    if (urlParams?.type) searchParams.type = urlParams.type;
-    if (urlParams?.actors) searchParams.actors = decodeKey(urlParams.actors);
+    if (urlParams?.type) {
+      searchParams.type = urlParams.type;
+      this.type = urlParams.type;
+    }
+    if (urlParams?.actors) {
+      searchParams.actors = decodeKey(urlParams.actors);
+      this.actors = urlParams.actors;
+    }
+    if (urlParams?.page) {
+      searchParams.page = Number.parseInt(urlParams.page);
+      this.page = urlParams.page;
+    }
     // compose search request and load data from ElasticSearch
     const req = composeSearchRequest(searchParams);
     const res = await searchClient.search([req]);
@@ -112,7 +130,16 @@ export default {
             </li>
           </ol>
         </div>
-        <div class="pagination">TODO: do we need it in SSR mode?</div>
+        <div class="pagination">
+          <div class="ais-Pagination">
+            <ul class="ais-Pagination-list">
+              <li class="ais-Pagination-item ais-Pagination-item--page" v-for="one of pages"><a
+                  class="ais-Pagination-link" :href="link(one)"
+                  :aria-label="`Page ${one}`">{{ one }}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>

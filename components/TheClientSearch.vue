@@ -31,6 +31,8 @@ export default {
           res.routeToState = () => {
             const res = {[INDEX]: {'refinementList': {}}};
             const params = inst.$route.params;
+            if (params?.page)
+              res[INDEX].page = Number.parseInt(params.page);
             if (params?.type)
               res[INDEX].refinementList.type = [params.type];
             if (params?.actors) {
