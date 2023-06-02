@@ -60,3 +60,23 @@ export function getSearchClient() {
 export function getServerRootMixin() {
     return mixin;
 }
+
+export function composeSearchRequest({type, actors, query} = {}) {
+    const res = {
+        indexName: INDEX,
+        params: {
+            facetFilters: [],
+            facets: ['type', 'actors'],
+            highlightPostTag: '__/ais-highlight__',
+            highlightPreTag: '__ais-highlight__',
+            hitsPerPage: 8,
+            maxValuesPerFacet: 10,
+            page: 0,
+            tagFilters: ''
+        }
+    };
+    if (actors) res.params.facetFilters.push([`actors:${actors}`]);
+    if (query) res.params.query = query;
+    if (type) res.params.facetFilters.push([`type:${type}`]);
+    return res;
+}

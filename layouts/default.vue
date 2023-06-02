@@ -2,6 +2,7 @@
   <header>
     <slot name="header">
       <NuxtLink to="/">Home</NuxtLink> |
+      <NuxtLink to="/csr/">CSR</NuxtLink> |
       <NuxtLink to="/ssr/">SSR</NuxtLink> |
       <NuxtLink to="/search/">Search</NuxtLink>
     </slot>

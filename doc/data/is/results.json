@@ -1,0 +1,86 @@
+{
+  "appliedRules": [],
+  "exhaustiveNbHits": true,
+  "exhaustiveFacetsCount": true,
+  "exhaustiveTypo": true,
+  "exhaustive": {
+    "facetsCount": true,
+    "nbHits": true,
+    "typo": true
+  },
+  "hitsPerPage": 8,
+  "processingTimeMS": 3,
+  "nbHits": 4162,
+  "page": 0,
+  "nbPages": 521,
+  "query": "",
+  "renderingContent": {
+    "facetOrdering": {
+      "facets": {
+        "order": [
+          "type",
+          "actors"
+        ]
+      },
+      "values": {
+        "type": {
+          "sortRemainingBy": "count"
+        },
+        "actors": {
+          "sortRemainingBy": "count"
+        }
+      }
+    }
+  },
+  "facets": {
+    "actors": {
+      "Naveen Andrews": 73,
+      "Jennifer Carpenter": 56,
+      "Michael C. Hall": 56,
+      "Emilie de Ravin": 53,
+      "Jared Padalecki": 49,
+      "Jensen Ackles": 49,
+      "Hugh Laurie": 41,
+      "Julie Benz": 40,
+      "Henry Ian Cusick": 39,
+      "Omar Epps": 36
+    },
+    "type": {
+      "movie": 3120,
+      "episode": 521,
+      "series": 473,
+      "game": 48
+    }
+  },
+  "facets_stats": {},
+  "hits": [
+    {
+      "objectID": "tt0111161",
+      "title": "The Shawshank Redemption",
+      "actors": [
+        "Tim Robbins",
+        "Morgan Freeman",
+        "Bob Gunton",
+        "William Sadler"
+      ],
+      "plot": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+      "poster": "https://s3-eu-west-1.amazonaws.com/imdbimages/images/MV5BODU4MjU4NjIwNl5BMl5BanBnXkFtZTgwMDU2MjEyMDE@._V1_SX300.jpg",
+      "_highlightResult": {
+        "title": {
+          "matchLevel": "none",
+          "matchedWords": [],
+          "value": "The Shawshank Redemption"
+        }
+      },
+      "_snippetResult": {
+        "plot": {
+          "matchLevel": "none",
+          "matchedWords": [],
+          "value": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency."
+        }
+      }
+    }
+  ],
+  "index": "imdb_movies",
+  "params": "facetFilters=&facets=type%2Cactors&highlightPostTag=__%2Fais-highlight__&highlightPreTag=__ais-highlight__&hitsPerPage=8&maxValuesPerFacet=10&page=0&tagFilters="
+}

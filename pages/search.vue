@@ -1,4 +1,9 @@
+<script>
+export default {};
+</script>
+
 <template>
   <q-btn color="primary">Search</q-btn>
-  <the-search/>
+  <the-client-search/>
+  <the-server-search/>
 </template>

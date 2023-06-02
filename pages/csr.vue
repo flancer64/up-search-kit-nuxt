@@ -1,7 +1,7 @@
 <script>
-export default {};
+
 </script>
 
 <template>
-  <the-server-search/>
+  <the-client-search/>
 </template>
